@@ -9,7 +9,7 @@ export default function HeroSection() {
         style={{
           backgroundImage: 'url(/images/hero.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center 35%',
+          backgroundPosition: 'center 45%',
         }}
         aria-label="Westar Farms — hero"
       >
@@ -116,7 +116,7 @@ export default function HeroSection() {
             {[
               { stat: 'Est. 1984', label: 'Years of Experience' },
               { stat: '3 Show Series', label: 'Hunter Jumper · Dressage · Development' },
-              { stat: "Ottawa's Premier", label: 'Equestrian Venue' },
+              { stat: 'Ottawa Area', label: 'Equestrian Venue' },
             ].map(({ stat, label }) => (
               <div key={stat} className="py-8 px-6 text-center">
                 <p

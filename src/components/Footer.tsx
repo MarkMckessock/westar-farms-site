@@ -1,11 +1,13 @@
+import { Link } from 'react-router-dom'
+
 const QUICK_LINKS = [
-  { label: 'Home', href: '#home' },
-  { label: 'Shows', href: '#shows' },
-  { label: 'Calendar', href: '#calendar' },
-  { label: 'News', href: '#news' },
-  { label: 'Partners', href: '#partners' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'Shows', href: '/shows' },
+  { label: 'Calendar', href: '/calendar' },
+  { label: 'News', href: '/news' },
+  { label: 'Partners', href: '/partners' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export default function Footer() {
@@ -38,12 +40,12 @@ export default function Footer() {
             <ul className="space-y-2">
               {QUICK_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-sm text-gray-400 hover:text-white transition-colors duration-150"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

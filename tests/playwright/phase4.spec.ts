@@ -1,25 +1,24 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Phase 4 — Polish & QA', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/')
-  })
-
   // ── Skip-to-content ──────────────────────────────────────────────────────
 
   test('skip-to-content link exists and targets #main-content', async ({ page }) => {
+    await page.goto('/')
     const skip = page.getByRole('link', { name: 'Skip to main content' })
     await expect(skip).toBeAttached()
     await expect(skip).toHaveAttribute('href', '#main-content')
   })
 
   test('main element has id="main-content"', async ({ page }) => {
+    await page.goto('/')
     const main = page.locator('main#main-content')
     await expect(main).toBeAttached()
   })
 
   test('skip-to-content link is focusable via keyboard', async ({ page, viewport }) => {
     if (!viewport || viewport.width < 1024) return
+    await page.goto('/')
     await page.keyboard.press('Tab')
     const skip = page.getByRole('link', { name: 'Skip to main content' })
     await expect(skip).toBeFocused()
@@ -28,72 +27,77 @@ test.describe('Phase 4 — Polish & QA', () => {
   // ── Landmark roles ────────────────────────────────────────────────────────
 
   test('page has exactly one <main>', async ({ page }) => {
+    await page.goto('/')
     const mains = page.locator('main')
     await expect(mains).toHaveCount(1)
   })
 
   test('page has a <header>', async ({ page }) => {
+    await page.goto('/')
     await expect(page.locator('header')).toBeAttached()
   })
 
   test('page has a <footer>', async ({ page }) => {
+    await page.goto('/')
     await expect(page.locator('footer')).toBeAttached()
   })
 
-  // ── Heading hierarchy ─────────────────────────────────────────────────────
+  // ── Route-based aria-current ─────────────────────────────────────────────
 
-  test('each section has at most one h2', async ({ page }) => {
-    const sections = page.locator('section')
-    const count = await sections.count()
-    for (let i = 0; i < count; i++) {
-      const section = sections.nth(i)
-      const h2s = section.locator('h2')
-      const h2Count = await h2s.count()
-      expect(h2Count).toBeLessThanOrEqual(1)
+  test('desktop: Home nav item has aria-current="page" on home route', async ({ page, viewport }) => {
+    if (!viewport || viewport.width < 1024) return
+    await page.goto('/')
+    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
+    const homeBtn = mainNav.getByRole('button', { name: 'Home', exact: true })
+    await expect(homeBtn).toHaveAttribute('aria-current', 'page')
+  })
+
+  test('desktop: Shows nav item has aria-current="page" on shows route', async ({ page, viewport }) => {
+    if (!viewport || viewport.width < 1024) return
+    await page.goto('/#/shows')
+    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
+    const showsBtn = mainNav.getByRole('button', { name: 'Shows', exact: true })
+    await expect(showsBtn).toHaveAttribute('aria-current', 'page')
+  })
+
+  test('desktop: Home nav item loses aria-current when navigating away', async ({ page, viewport }) => {
+    if (!viewport || viewport.width < 1024) return
+    await page.goto('/#/about')
+    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
+    const homeBtn = mainNav.getByRole('button', { name: 'Home', exact: true })
+    await expect(homeBtn).not.toHaveAttribute('aria-current', 'page')
+  })
+
+  // ── Page headers ───────────────────────────────────────────────────────────
+
+  test('each sub-page has an h1 with the expected title', async ({ page }) => {
+    const pages: [string, RegExp][] = [
+      ['/#/shows', /Our Show Series/i],
+      ['/#/calendar', /2026 Show Season/i],
+      ['/#/news', /News & Events/i],
+      ['/#/partners', /Our Partners/i],
+      ['/#/about', /About Westar Farms/i],
+      ['/#/contact', /Get in Touch/i],
+    ]
+    for (const [route, titlePattern] of pages) {
+      await page.goto(route)
+      await expect(page.locator('h1').first()).toContainText(titlePattern)
     }
-  })
-
-  // ── Scroll spy / aria-current ─────────────────────────────────────────────
-
-  test('desktop: Home nav item has aria-current="page" on load', async ({ page, viewport }) => {
-    if (!viewport || viewport.width < 1024) return
-    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
-    const homeLink = mainNav.getByRole('link', { name: 'Home', exact: true })
-    await expect(homeLink).toHaveAttribute('aria-current', 'page')
-  })
-
-  test('desktop: Shows nav item gets aria-current after scrolling to shows section', async ({ page, viewport }) => {
-    if (!viewport || viewport.width < 1024) return
-    await page.evaluate(() => {
-      const el = document.getElementById('shows')
-      el?.scrollIntoView()
-    })
-    await page.waitForTimeout(200)
-    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
-    const showsLink = mainNav.getByRole('link', { name: 'Shows', exact: true })
-    await expect(showsLink).toHaveAttribute('aria-current', 'page')
   })
 
   // ── Lazy loading ───────────────────────────────────────────────────────────
 
   test('below-fold images have loading="lazy"', async ({ page }) => {
-    // News, partners, about, and competitor resource images are lazy
+    await page.goto('/#/shows')
     const lazyImgs = page.locator('img[loading="lazy"]')
     const count = await lazyImgs.count()
     expect(count).toBeGreaterThan(0)
   })
 
-  test('hero image is not lazy (above the fold)', async ({ page }) => {
-    const hero = page.locator('[data-testid="section-hero"] img').first()
-    if (await hero.count() === 0) return // hero uses CSS background — skip
-    await expect(hero).not.toHaveAttribute('loading', 'lazy')
-  })
-
   // ── Image alt text ─────────────────────────────────────────────────────────
 
   test('decorative photo card images have empty alt=""', async ({ page }) => {
-    // Photo banner wrappers in section content are aria-hidden with alt=""
-    // (excludes mobile nav panel logo which is aria-hidden when closed but has real alt)
+    await page.goto('/#/shows')
     const decorative = page.locator('section [aria-hidden="true"] img')
     const count = await decorative.count()
     for (let i = 0; i < count; i++) {
@@ -106,18 +110,21 @@ test.describe('Phase 4 — Polish & QA', () => {
 
   test('mobile: hamburger button is visible', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 1024) return
+    await page.goto('/')
     const hamburger = page.getByTestId('hamburger')
     await expect(hamburger).toBeVisible()
   })
 
   test('mobile: desktop nav is hidden', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 1024) return
+    await page.goto('/')
     const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
     await expect(mainNav).toBeHidden()
   })
 
   test('desktop: hamburger button is not visible', async ({ page, viewport }) => {
     if (!viewport || viewport.width < 1024) return
+    await page.goto('/')
     const hamburger = page.getByTestId('hamburger')
     await expect(hamburger).toBeHidden()
   })

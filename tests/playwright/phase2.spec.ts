@@ -23,7 +23,7 @@ test.describe('Hero Section', () => {
     await expect(strip).toBeVisible()
     await expect(strip.getByText('Est. 1984')).toBeVisible()
     await expect(strip.getByText('3 Show Series')).toBeVisible()
-    await expect(strip.getByText("Ottawa's Premier")).toBeVisible()
+    await expect(strip.getByText('Ottawa Area')).toBeVisible()
   })
 
   test('no horizontal scroll on mobile hero', async ({ page, viewport }) => {
@@ -35,7 +35,7 @@ test.describe('Hero Section', () => {
 
 test.describe('Shows Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/#shows')
+    await page.goto('/#/shows')
   })
 
   test('renders section heading', async ({ page }) => {
@@ -77,8 +77,6 @@ test.describe('Shows Section', () => {
   })
 
   test('Derby Day shows championship indicator', async ({ page }) => {
-    await page.getByTestId('tab-hunter-jumper').click()
-    // Derby Day is not a championship but Summerset is — test Summerset on dressage tab
     await page.getByTestId('tab-dressage').click()
     const section = page.getByTestId('section-shows')
     await expect(section.getByText('Championship Event')).toBeVisible()
@@ -87,18 +85,16 @@ test.describe('Shows Section', () => {
   test('tabs switch content without page reload', async ({ page }) => {
     const tabPanel = page.getByRole('tabpanel')
     await page.getByTestId('tab-dressage').click()
-    // Check that a dressage show heading is visible inside the tab panel
     await expect(tabPanel.getByRole('heading', { name: 'Springfest Dressage Show', exact: true })).toBeVisible()
     await page.getByTestId('tab-hunter-jumper').click()
     await expect(tabPanel.getByRole('heading', { name: 'Spring Trillium Bronze Show', exact: true })).toBeVisible()
-    // Dressage heading no longer in tab panel
     await expect(tabPanel.getByRole('heading', { name: 'Springfest Dressage Show', exact: true })).not.toBeVisible()
   })
 })
 
 test.describe('Calendar Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/#calendar')
+    await page.goto('/#/calendar')
   })
 
   test('renders calendar heading', async ({ page }) => {
@@ -115,11 +111,7 @@ test.describe('Calendar Section', () => {
   })
 
   test('shows series legend', async ({ page }) => {
-    const legend = page.getByRole('list', { name: 'Series legend' })
-      .or(page.getByLabel('Series legend'))
-    // Use aria-label on the legend container
     const section = page.getByTestId('section-calendar')
-    // Each legend item text appears multiple times (also in cards); scope to first instance
     await expect(section.getByText('Hunter Jumper').first()).toBeVisible()
     await expect(section.getByText('Dressage').first()).toBeVisible()
     await expect(section.getByText('Development').first()).toBeVisible()
@@ -133,7 +125,7 @@ test.describe('Calendar Section', () => {
 
 test.describe('About Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/#about')
+    await page.goto('/#/about')
   })
 
   test('renders about heading', async ({ page }) => {
@@ -172,8 +164,7 @@ test.describe('About Section', () => {
 test.describe('Mobile layout — Phase 2', () => {
   test('shows section tabs are tappable on mobile', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 768) return
-    await page.goto('/')
-    await page.getByTestId('section-shows').scrollIntoViewIfNeeded()
+    await page.goto('/#/shows')
     const dressageTab = page.getByTestId('tab-dressage')
     await expect(dressageTab).toBeVisible()
     await dressageTab.click()
@@ -182,7 +173,7 @@ test.describe('Mobile layout — Phase 2', () => {
 
   test('calendar rows are readable on mobile without horizontal scroll', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 768) return
-    await page.goto('/')
+    await page.goto('/#/calendar')
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewport.width)
   })

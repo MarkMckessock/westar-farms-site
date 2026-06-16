@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function HeroSection() {
   return (
     <>
@@ -76,16 +78,16 @@ export default function HeroSection() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#shows" className="btn-primary">
+            <Link to="/shows" className="btn-primary">
               View Our Shows
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className="btn-ghost"
               style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'white' }}
             >
               Contact Us
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -94,7 +96,7 @@ export default function HeroSection() {
           className="relative flex justify-center pb-8 animate-bounce"
           aria-hidden="true"
         >
-          <a href="#shows" tabIndex={-1}>
+          <Link to="/shows" tabIndex={-1}>
             <svg
               className="w-6 h-6 text-white/40"
               viewBox="0 0 24 24"
@@ -105,7 +107,7 @@ export default function HeroSection() {
             >
               <path d="M12 5v14M5 12l7 7 7-7" />
             </svg>
-          </a>
+          </Link>
         </div>
       </section>
 

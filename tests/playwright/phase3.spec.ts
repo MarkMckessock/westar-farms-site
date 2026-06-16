@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('News Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/#/news')
   })
 
   test('renders section heading', async ({ page }) => {
@@ -46,11 +46,17 @@ test.describe('News Section', () => {
     await section.getByTestId('news-tab-upcoming').click()
     await expect(section.getByText('2026 Show Season Now Open')).toBeVisible()
   })
+
+  test('nav dropdown activates Clinics tab via URL param', async ({ page }) => {
+    await page.goto('/#/news?tab=clinics')
+    const section = page.getByTestId('section-news')
+    await expect(section.getByTestId('news-tab-clinics')).toHaveAttribute('aria-selected', 'true')
+  })
 })
 
 test.describe('Partners Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/#/partners')
   })
 
   test('renders section heading', async ({ page }) => {
@@ -85,7 +91,7 @@ test.describe('Partners Section', () => {
 
 test.describe('Competitor Resources Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/#/shows')
   })
 
   test('renders section heading', async ({ page }) => {
@@ -119,7 +125,6 @@ test.describe('Competitor Resources Section', () => {
 
   test('membership table has horizontal scroll on mobile', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 768) return
-    // Table should be inside overflow-x-auto container — body should not scroll horizontally
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewport.width)
   })
@@ -134,7 +139,7 @@ test.describe('Competitor Resources Section', () => {
 
 test.describe('Contact Section', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/#/contact')
   })
 
   test('renders section heading', async ({ page }) => {
@@ -182,17 +187,16 @@ test.describe('Contact Section', () => {
 })
 
 test.describe('Mobile — Phase 3', () => {
-  test('no horizontal scroll with all sections loaded', async ({ page, viewport }) => {
-    await page.goto('/')
+  test('no horizontal scroll on shows page', async ({ page, viewport }) => {
+    await page.goto('/#/shows')
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual((viewport?.width ?? 375))
   })
 
   test('contact form is usable on mobile', async ({ page, viewport }) => {
     if (!viewport || viewport.width >= 768) return
-    await page.goto('/')
+    await page.goto('/#/contact')
     const form = page.getByTestId('contact-form')
-    await form.scrollIntoViewIfNeeded()
     await expect(form.getByLabel(/name/i)).toBeVisible()
     const nameInput = form.getByLabel(/name/i)
     const box = await nameInput.boundingBox()

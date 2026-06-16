@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 interface TeamMember {
   name: string
   role: string
@@ -183,7 +185,7 @@ export default function AboutSection() {
           </div>
 
           {/* Team */}
-          <div className="mt-20">
+          <div id="about-team" className="mt-20">
             <p className="section-label">Our Team</p>
             <h3
               className="mt-1 mb-1"
@@ -299,9 +301,9 @@ export default function AboutSection() {
                   events allow horse lovers to come and school in a relaxed atmosphere or try a fun event
                   like Derby Cross or field hunter classes.
                 </p>
-                <a href="#contact" className="btn-primary" style={{ fontSize: '0.875rem' }}>
+                <Link to="/contact" className="btn-primary" style={{ fontSize: '0.875rem' }}>
                   Contact for Availability
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -337,9 +339,9 @@ export default function AboutSection() {
                   well-maintained rings, stabling, and amenities make it an excellent choice for your
                   event.
                 </p>
-                <a href="#contact" className="btn-ghost" style={{ fontSize: '0.875rem' }}>
+                <Link to="/contact" className="btn-ghost" style={{ fontSize: '0.875rem' }}>
                   Inquire About Rental
-                </a>
+                </Link>
               </div>
             </div>
           </div>

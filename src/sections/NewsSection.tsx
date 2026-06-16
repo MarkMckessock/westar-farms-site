@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { NEWS_BY_TAB, type NewsItem, type NewsCategory } from '../data/news'
 
 type NewsTab = 'upcoming' | 'clinics' | 'results'
 
-const TABS: { id: NewsTab; label: string; anchor: string }[] = [
-  { id: 'upcoming', label: 'Upcoming Events', anchor: 'news-upcoming' },
-  { id: 'clinics', label: 'Clinics', anchor: 'news-clinics' },
-  { id: 'results', label: 'Results', anchor: 'news-results' },
+const TABS: { id: NewsTab; label: string }[] = [
+  { id: 'upcoming', label: 'Upcoming Events' },
+  { id: 'clinics', label: 'Clinics' },
+  { id: 'results', label: 'Results' },
 ]
-
-const HASH_TO_TAB: Record<string, NewsTab> = {
-  '#news-upcoming': 'upcoming',
-  '#news-clinics': 'clinics',
-  '#news-results': 'results',
-}
 
 const CATEGORY_STYLES: Record<NewsCategory, { bg: string; text: string }> = {
   Upcoming: { bg: 'rgba(203,46,46,0.1)', text: '#cb2e2e' },
@@ -121,21 +116,22 @@ function EmptyState({ tab }: { tab: NewsTab }) {
 }
 
 export default function NewsSection() {
-  const [activeTab, setActiveTab] = useState<NewsTab>('upcoming')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const getTab = (): NewsTab => {
+    const t = searchParams.get('tab')
+    return t === 'clinics' || t === 'results' ? t : 'upcoming'
+  }
+
+  const [activeTab, setActiveTab] = useState<NewsTab>(getTab)
 
   useEffect(() => {
-    const activate = () => {
-      const tab = HASH_TO_TAB[window.location.hash]
-      if (tab) setActiveTab(tab)
-    }
-    activate()
-    window.addEventListener('hashchange', activate)
-    return () => window.removeEventListener('hashchange', activate)
-  }, [])
+    setActiveTab(getTab())
+  }, [searchParams])
 
   const handleTabClick = (tab: typeof TABS[number]) => {
     setActiveTab(tab.id)
-    history.replaceState(null, '', `#${tab.anchor}`)
+    setSearchParams({ tab: tab.id }, { replace: true })
   }
 
   const items = NEWS_BY_TAB[activeTab]
@@ -191,7 +187,7 @@ export default function NewsSection() {
         </div>
 
         {/* Cards */}
-        <div role="tabpanel" id={TABS.find((t) => t.id === activeTab)?.anchor}>
+        <div role="tabpanel" id={`news-${activeTab}`}>
           {items.length === 0 ? (
             <EmptyState tab={activeTab} />
           ) : (

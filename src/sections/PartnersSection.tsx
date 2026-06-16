@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const SPONSORS = [
   {
     id: 'vision-saddlery',
@@ -142,9 +144,9 @@ export default function PartnersSection() {
               throughout the show season. Sponsorship opportunities range from class sponsorships to
               full series title sponsorships. Contact us to discuss a package that works for you.
             </p>
-            <a href="#contact" className="btn-primary" style={{ fontSize: '0.875rem' }}>
+            <Link to="/contact" className="btn-primary" style={{ fontSize: '0.875rem' }}>
               Inquire About Sponsoring
-            </a>
+            </Link>
           </div>
 
           {/* Vendor Opportunities */}
@@ -184,9 +186,9 @@ export default function PartnersSection() {
               and horse owners throughout the season. Vendor spots are available at select shows
               for equestrian goods, apparel, and related services.
             </p>
-            <a href="#contact" className="btn-ghost" style={{ fontSize: '0.875rem' }}>
+            <Link to="/contact" className="btn-ghost" style={{ fontSize: '0.875rem' }}>
               Inquire About Vending
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -215,9 +217,9 @@ export default function PartnersSection() {
             <p className="text-sm leading-relaxed" style={{ color: 'var(--color-brand-gray)' }}>
               Vendor information for the 2026 season will be listed here. For inquiries about
               vending at Westar Farms shows, please{' '}
-              <a href="#contact" className="font-medium underline underline-offset-2" style={{ color: 'var(--color-brand-red)' }}>
+              <Link to="/contact" className="font-medium underline underline-offset-2" style={{ color: 'var(--color-brand-red)' }}>
                 contact us
-              </a>
+              </Link>
               .
             </p>
           </div>

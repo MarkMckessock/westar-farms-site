@@ -10,14 +10,13 @@ test.describe('Navbar', () => {
   })
 
   test('shows logo', async ({ page }) => {
-    await expect(page.getByRole('link', { name: /westar farms home/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /westar farms home/i })).toBeVisible()
   })
 
   test('desktop: shows all nav items', async ({ page, viewport }) => {
     if (!viewport || viewport.width < 1024) return
     const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
     for (const label of ['Home', 'Shows', 'Calendar', 'News', 'Partners', 'About Us', 'Contact']) {
-      // Use first() because 'About Us' also appears in the dropdown child list
       await expect(mainNav.getByText(label).first()).toBeVisible()
     }
   })
@@ -35,9 +34,9 @@ test.describe('Navbar', () => {
     if (!viewport || viewport.width < 1024) return
     const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
     await mainNav.getByText('Shows').hover()
-    await expect(page.getByRole('link', { name: 'Trillium-Bronze Hunter Jumper' })).toBeVisible()
-    await expect(mainNav.getByRole('link', { name: 'Dressage', exact: true })).toBeVisible()
-    await expect(mainNav.getByRole('link', { name: 'Development', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Trillium-Bronze Hunter Jumper' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Dressage', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Development', exact: true })).toBeVisible()
   })
 
   test('becomes solid white background after scroll', async ({ page, viewport }) => {
@@ -46,6 +45,13 @@ test.describe('Navbar', () => {
     await page.waitForTimeout(400)
     const navbar = page.getByTestId('navbar')
     await expect(navbar).toHaveClass(/bg-white/)
+  })
+
+  test('clicking a nav item navigates to the correct page', async ({ page, viewport }) => {
+    if (!viewport || viewport.width < 1024) return
+    const mainNav = page.getByRole('navigation', { name: 'Main navigation' })
+    await mainNav.getByRole('button', { name: 'Shows', exact: true }).click()
+    await expect(page.getByTestId('section-shows')).toBeVisible()
   })
 })
 
@@ -77,27 +83,28 @@ test.describe('Footer', () => {
 })
 
 test.describe('Page structure', () => {
-  test.beforeEach(async ({ page }) => {
+  test('home page renders hero section', async ({ page }) => {
     await page.goto('/')
+    await expect(page.getByTestId('section-home')).toBeVisible()
   })
 
-  test('all section anchors exist', async ({ page }) => {
-    for (const id of ['home', 'shows', 'calendar', 'news', 'partners', 'about', 'contact']) {
-      await expect(page.getByTestId(`section-${id}`)).toBeAttached()
+  test('each top-level route renders a page header', async ({ page }) => {
+    for (const route of ['/#/shows', '/#/calendar', '/#/news', '/#/partners', '/#/about', '/#/contact']) {
+      await page.goto(route)
+      await expect(page.locator('h1').first()).toBeVisible()
     }
   })
 
   test('no horizontal scroll at any breakpoint', async ({ page }) => {
+    await page.goto('/')
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth)
     const viewportWidth = page.viewportSize()!.width
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth)
   })
 
-  test('nav CTA links scroll to correct sections', async ({ page, viewport }) => {
-    if (!viewport || viewport.width < 1024) return
+  test('View Our Shows CTA navigates to shows page', async ({ page }) => {
+    await page.goto('/')
     await page.getByRole('link', { name: 'View Our Shows' }).click()
-    await page.waitForTimeout(600)
-    const showsSection = page.getByTestId('section-shows')
-    await expect(showsSection).toBeInViewport()
+    await expect(page.getByTestId('section-shows')).toBeVisible()
   })
 })

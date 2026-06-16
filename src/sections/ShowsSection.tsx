@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { SHOWS_BY_SERIES, SERIES_META, type ShowEvent, type ShowSeries } from '../data/shows'
 
 const TABS: { id: ShowSeries; label: string; anchor: string }[] = [
@@ -6,13 +7,6 @@ const TABS: { id: ShowSeries; label: string; anchor: string }[] = [
   { id: 'dressage', label: 'Dressage', anchor: 'shows-dressage' },
   { id: 'development', label: 'Development', anchor: 'shows-development' },
 ]
-
-const HASH_TO_TAB: Record<string, ShowSeries> = {
-  '#shows-hunterjumper': 'hunter-jumper',
-  '#shows-feature': 'hunter-jumper',
-  '#shows-dressage': 'dressage',
-  '#shows-development': 'development',
-}
 
 function PlaceholderLink({ children }: { children: React.ReactNode }) {
   return (
@@ -226,22 +220,23 @@ function DevelopmentContent() {
 }
 
 export default function ShowsSection() {
-  const [activeTab, setActiveTab] = useState<ShowSeries>('hunter-jumper')
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  // Activate the correct tab when navigating via hash
+  const getSeries = (): ShowSeries => {
+    const s = searchParams.get('series')
+    if (s === 'dressage' || s === 'development') return s
+    return 'hunter-jumper'
+  }
+
+  const [activeTab, setActiveTab] = useState<ShowSeries>(getSeries)
+
   useEffect(() => {
-    const activate = () => {
-      const tab = HASH_TO_TAB[window.location.hash]
-      if (tab) setActiveTab(tab)
-    }
-    activate()
-    window.addEventListener('hashchange', activate)
-    return () => window.removeEventListener('hashchange', activate)
-  }, [])
+    setActiveTab(getSeries())
+  }, [searchParams])
 
   const handleTabClick = (tab: typeof TABS[number]) => {
     setActiveTab(tab.id)
-    history.replaceState(null, '', `#${tab.anchor}`)
+    setSearchParams({ series: tab.id }, { replace: true })
   }
 
   return (

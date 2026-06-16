@@ -82,6 +82,19 @@ test.describe('Shows Section', () => {
     await expect(section.getByText('Championship Event')).toBeVisible()
   })
 
+  test('nav dropdown activates Dressage tab via URL param', async ({ page }) => {
+    await page.goto('/#/shows?series=dressage')
+    const section = page.getByTestId('section-shows')
+    await expect(section.getByTestId('tab-dressage')).toHaveAttribute('aria-selected', 'true')
+    await expect(section.getByText('Springfest Dressage Show')).toBeVisible()
+  })
+
+  test('nav dropdown activates Development tab via URL param', async ({ page }) => {
+    await page.goto('/#/shows?series=development')
+    const section = page.getByTestId('section-shows')
+    await expect(section.getByTestId('tab-development')).toHaveAttribute('aria-selected', 'true')
+  })
+
   test('tabs switch content without page reload', async ({ page }) => {
     const tabPanel = page.getByRole('tabpanel')
     await page.getByTestId('tab-dressage').click()

@@ -142,10 +142,8 @@ test.describe('Contact Section', () => {
     await page.goto('/#/contact')
   })
 
-  test('renders section heading', async ({ page }) => {
-    const section = page.getByTestId('section-contact')
-    await expect(section).toBeVisible()
-    await expect(section.getByRole('heading', { level: 2 })).toContainText('Get in Touch')
+  test('contact section is visible', async ({ page }) => {
+    await expect(page.getByTestId('section-contact')).toBeVisible()
   })
 
   test('contact form has all required fields', async ({ page }) => {

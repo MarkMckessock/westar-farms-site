@@ -40,38 +40,85 @@ const FACILITIES = [
   'Gardens and shade under the maple trees',
 ]
 
-function TeamCard({ member }: { member: TeamMember }) {
+function FounderCard({ member }: { member: TeamMember }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-      {/* Photo or placeholder banner */}
-      <div className="aspect-[4/3] relative overflow-hidden" aria-hidden="true">
-        {member.photo && member.photo2 ? (
-          <div className="flex h-full">
-            <img src={member.photo} alt="" loading="lazy" decoding="async" className="w-1/2 h-full object-cover object-top" />
-            <img src={member.photo2} alt="" loading="lazy" decoding="async" className="w-1/2 h-full object-cover object-top" />
-          </div>
-        ) : member.photo ? (
-          <img src={member.photo} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(203,46,46,0.06) 0%, rgba(203,46,46,0.02) 100%)' }}
-          >
-            <svg className="w-12 h-12" style={{ color: 'rgba(203,46,46,0.25)' }} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-            </svg>
-          </div>
-        )}
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:flex">
+      {/* Side-by-side portrait photos */}
+      <div className="lg:w-5/12 xl:w-2/5 flex-shrink-0" aria-hidden="true">
+        <div className="flex h-64 lg:h-full">
+          {member.photo && (
+            <img
+              src={member.photo}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="w-1/2 h-full object-cover object-top"
+            />
+          )}
+          {member.photo2 && (
+            <img
+              src={member.photo2}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="w-1/2 h-full object-cover object-top"
+            />
+          )}
+          {!member.photo && (
+            <div
+              className="w-full h-full flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, rgba(203,46,46,0.08) 0%, rgba(203,46,46,0.03) 100%)' }}
+            >
+              <svg className="w-14 h-14" style={{ color: 'rgba(203,46,46,0.25)' }} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+              </svg>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-7 lg:p-10 flex flex-col justify-center">
+        <p
+          className="text-xs font-semibold uppercase tracking-[0.15em] mb-2"
+          style={{ color: 'var(--color-brand-red)', fontFamily: 'var(--font-sans)' }}
+        >
+          {member.role}
+        </p>
+        <h4
+          className="mb-4"
+          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)', fontWeight: 700 }}
+        >
+          {member.name}
+        </h4>
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--color-brand-gray)' }}>
+          {member.bio}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function SupportCard({ member }: { member: TeamMember }) {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex items-center gap-5 p-5">
+      {/* Avatar circle */}
+      <div
+        className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{ background: 'linear-gradient(135deg, rgba(203,46,46,0.08) 0%, rgba(203,46,46,0.03) 100%)' }}
+        aria-hidden="true"
+      >
+        <svg className="w-7 h-7" style={{ color: 'rgba(203,46,46,0.3)' }} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+      </div>
+      <div>
         <h4
           className="mb-0.5"
-          style={{ fontFamily: 'var(--font-display)', fontSize: '1.0625rem', fontWeight: 700 }}
+          style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 700 }}
         >
           {member.name}
         </h4>
         <p
-          className="text-xs font-semibold uppercase tracking-wide mb-3"
+          className="text-xs font-semibold uppercase tracking-wide mb-1.5"
           style={{ color: 'var(--color-brand-red)' }}
         >
           {member.role}
@@ -199,11 +246,17 @@ export default function AboutSection() {
               produce enjoyable events where riders can test their skills in a safe and welcoming
               environment.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {TEAM.map((member) => (
-                <TeamCard key={member.name} member={member} />
-              ))}
-            </div>
+            {/* Founders — full-width featured card */}
+            <FounderCard member={TEAM[0]} />
+
+            {/* Supporting team — compact horizontal cards */}
+            {TEAM.length > 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                {TEAM.slice(1).map((member) => (
+                  <SupportCard key={member.name} member={member} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

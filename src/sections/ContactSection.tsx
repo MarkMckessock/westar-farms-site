@@ -91,14 +91,6 @@ export default function ContactSection() {
       style={{ background: 'var(--color-brand-light)' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="section-label">Contact</p>
-        <h2 className="section-heading mt-1">Get in Touch</h2>
-        <hr className="section-rule" />
-        <p className="section-lead mb-12">
-          Have a question about shows, venue rental, sponsorship, or schooling? We'd love to
-          hear from you.
-        </p>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Form */}
           <div className="lg:col-span-7">

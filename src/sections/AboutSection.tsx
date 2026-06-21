@@ -52,7 +52,8 @@ function FounderCard({ member }: { member: TeamMember }) {
               alt=""
               loading="lazy"
               decoding="async"
-              className="w-1/2 h-full object-cover object-top"
+              className="w-1/2 h-full object-cover"
+              style={{ objectPosition: '62% top' }}
             />
           )}
           {member.photo2 && (

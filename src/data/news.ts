@@ -19,7 +19,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'We are thrilled to announce the full 2026 Westar Farms show season. With Hunter Jumper, Dressage, and Development series running May through September, there is something for every rider. Prize lists and entry information are now available.',
     tab: 'upcoming',
-    image: '/images/news-season-open.jpg',
+    image: '/images/news-season-open.webp',
   },
   {
     id: 'spring-trillium-promo',
@@ -29,7 +29,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       "Our season opener features all Trillium and Bronze core classes plus the Vision Saddlery Hunter Derby. Entry closing May 21. Don't miss the Team Derby, Nations Cup, and the beloved Twinkle Stars Leadline Class.",
     tab: 'upcoming',
-    image: '/images/news-hunter-jumper.jpg',
+    image: '/images/news-hunter-jumper.webp',
   },
   {
     id: 'springfest-dressage-promo',
@@ -39,7 +39,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'The 2026 dressage season kicks off with Springfest, offering Gold, Silver, Bronze, and ESD classes. This show serves as a qualifier for the North American Youth Championships. Entry closing April 30.',
     tab: 'upcoming',
-    image: '/images/news-dressage.jpg',
+    image: '/images/news-dressage.webp',
   },
   {
     id: 'derby-day-promo',
@@ -49,7 +49,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'The highlight of the Hunter Jumper season! Derby Day features the Vision Hunter Derby Finale, Open Hunter Classic, Future Stars Costume Classic, and much more. Entry closing August 27. Plan your season finale with us.',
     tab: 'upcoming',
-    image: '/images/news-derby-day.jpg',
+    image: '/images/news-derby-day.webp',
   },
   {
     id: 'clinics-placeholder',
@@ -59,7 +59,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'We host clinics throughout the season featuring respected clinicians in hunter-jumper, dressage, and equitation. Check back here for announcements, or follow us on Facebook and Instagram to be the first to know.',
     tab: 'clinics',
-    image: '/images/news-clinic.jpg',
+    image: '/images/news-clinic.webp',
   },
   {
     id: 'results-2025-season',
@@ -69,7 +69,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'Congratulations to all our 2025 Westar Farms series champions and high-point award winners. The TZE/OVPSC banquet celebrated another outstanding year of Hunter Jumper competition, while the OADG season-end banquet honored our Dressage champions.',
     tab: 'results',
-    image: '/images/news-results-champions.jpg',
+    image: '/images/news-results-champions.webp',
   },
   {
     id: 'results-summerset-2025',
@@ -79,7 +79,7 @@ export const NEWS_ITEMS: NewsItem[] = [
     excerpt:
       'Summerset Dressage wrapped our 2025 dressage season with the Ontario Dressage Silver Championships and OADG ESD Championships. Congratulations to all competitors who earned their championships titles at Westar Farms.',
     tab: 'results',
-    image: '/images/news-results-dressage.jpg',
+    image: '/images/news-results-dressage.webp',
   },
 ]
 

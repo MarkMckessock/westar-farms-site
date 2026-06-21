@@ -9,7 +9,7 @@ export default function ShowsPage() {
         label="Shows"
         title="Our Show Series"
         subtitle="Three distinct series for riders and horses of all levels — from first-time competitors to seasoned athletes."
-        image="/images/page-header-shows.jpg"
+        image="/images/page-header-shows.webp"
       />
       <ShowsSection />
       <CompetitorResourcesSection />

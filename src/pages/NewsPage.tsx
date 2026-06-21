@@ -8,7 +8,7 @@ export default function NewsPage() {
         label="News & Events"
         title="News & Events"
         subtitle="Stay up to date with upcoming shows, clinic announcements, and season results."
-        image="/images/page-header-news.jpg"
+        image="/images/page-header-news.webp"
       />
       <NewsSection />
     </>

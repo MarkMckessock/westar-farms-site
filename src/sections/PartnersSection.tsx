@@ -200,7 +200,7 @@ export default function PartnersSection() {
         >
           <div className="aspect-[21/6] overflow-hidden">
             <img
-              src="/images/vendors.jpg"
+              src="/images/vendors.webp"
               alt="Vendor row at a Westar Farms show"
               loading="lazy"
               decoding="async"

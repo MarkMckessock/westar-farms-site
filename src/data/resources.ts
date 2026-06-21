@@ -28,7 +28,7 @@ export const PRIZE_LISTS: PrizeList[] = [
     year: 2026,
     series: 'hunter-jumper',
     url: '#',
-    image: '/images/prize-list-hj.jpg',
+    image: '/images/prize-list-hj.webp',
   },
   {
     id: 'dressage-prize-list',
@@ -36,7 +36,7 @@ export const PRIZE_LISTS: PrizeList[] = [
     year: 2026,
     series: 'dressage',
     url: '#',
-    image: '/images/prize-list-dressage.jpg',
+    image: '/images/prize-list-dressage.webp',
   },
   {
     id: 'esd-prize-list',
@@ -44,7 +44,7 @@ export const PRIZE_LISTS: PrizeList[] = [
     year: 2026,
     series: 'dressage-esd',
     url: '#',
-    image: '/images/prize-list-esd.jpg',
+    image: '/images/prize-list-esd.webp',
   },
   {
     id: 'development-prize-list',
@@ -52,7 +52,7 @@ export const PRIZE_LISTS: PrizeList[] = [
     year: 2026,
     series: 'development',
     url: '#',
-    image: '/images/prize-list-development.jpg',
+    image: '/images/prize-list-development.webp',
   },
 ]
 

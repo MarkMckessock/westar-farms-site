@@ -13,8 +13,8 @@ const TEAM: TeamMember[] = [
     name: 'Jeff & Bridget McKessock',
     role: 'Founders',
     bio: 'Jeff and Bridget started Westar Farms in 1984 and have been at their current home since 1988. Both bring extensive backgrounds as competitors — Bridget in hunter-jumper and Jeff in 3-day eventing and show jumping. After 40 years running a highly successful riding school and competition show barn, they now focus their efforts on hosting horse shows, events, and clinics.',
-    photo: '/images/team-jeff-bridget.jpg',
-    photo2: '/images/team-bridget.jpg',
+    photo: '/images/team-jeff-bridget.webp',
+    photo2: '/images/team-bridget.webp',
   },
   {
     name: 'Kelsey & Dawn Butler',
@@ -303,7 +303,7 @@ export default function AboutSection() {
             <div className="mt-10 lg:mt-0">
               <div className="rounded-2xl overflow-hidden aspect-[4/3] shadow-sm">
                 <img
-                  src="/images/facility-ring.jpg"
+                  src="/images/facility-ring.webp"
                   alt="Westar Farms sand ring with jumps"
                   loading="lazy"
                   decoding="async"
@@ -331,7 +331,7 @@ export default function AboutSection() {
             >
               <div className="aspect-[16/7] overflow-hidden">
                 <img
-                  src="/images/schooling.jpg"
+                  src="/images/schooling.webp"
                   alt="Instructor coaching riders in the show ring"
                   loading="lazy"
                   decoding="async"
@@ -369,7 +369,7 @@ export default function AboutSection() {
             >
               <div className="aspect-[16/7] overflow-hidden">
                 <img
-                  src="/images/venue-grass-ring.jpg"
+                  src="/images/venue-grass-ring.webp"
                   alt="Westar Farms grass show ring"
                   loading="lazy"
                   decoding="async"

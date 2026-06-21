@@ -8,7 +8,7 @@ export default function AboutPage() {
         label="About Us"
         title="About Westar Farms"
         subtitle="Over 40 years serving the Ottawa equestrian community from our home in Ashton, Ontario."
-        image="/images/facility-ring.jpg"
+        image="/images/facility-ring.webp"
       />
       <AboutSection />
     </>

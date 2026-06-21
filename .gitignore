@@ -30,3 +30,6 @@ design_resources/
 # Playwright output
 playwright-report/
 test-results/
+
+# Image optimization backups
+*.bak

@@ -9,7 +9,7 @@ export default function HeroSection() {
         data-testid="section-home"
         className="relative min-h-screen flex flex-col"
         style={{
-          backgroundImage: 'url(/images/hero.jpg)',
+          backgroundImage: 'url(/images/hero.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center 45%',
         }}

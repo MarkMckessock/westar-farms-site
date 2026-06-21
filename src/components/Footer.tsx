@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { asset } from '../utils/asset'
 
 const QUICK_LINKS = [
   { label: 'Home', href: '/' },
@@ -18,7 +19,7 @@ export default function Footer() {
           {/* Col 1: Logo + tagline */}
           <div>
             <img
-              src="/logo.png"
+              src={asset("/logo.png")}
               alt="Westar Farms"
               className="h-12 w-auto brightness-0 invert mb-4"
             />

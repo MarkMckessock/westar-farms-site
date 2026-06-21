@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { asset } from '../utils/asset'
 
 interface NavChild {
   label: string
@@ -158,7 +159,7 @@ export default function Navbar() {
               aria-label="Westar Farms home"
             >
               <img
-                src="/logo.png"
+                src={asset("/logo.png")}
                 alt="Westar Farms"
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${logoFilter}`}
               />
@@ -273,7 +274,7 @@ export default function Navbar() {
           }`}
         >
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-            <img src="/logo.png" alt="Westar Farms" className="h-8 w-auto brightness-0" />
+            <img src={asset("/logo.png")} alt="Westar Farms" className="h-8 w-auto brightness-0" />
             <button
               onClick={() => setMobileOpen(false)}
               className="w-8 h-8 flex items-center justify-center text-brand-gray hover:text-brand-dark"

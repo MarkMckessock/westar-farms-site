@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { NEWS_BY_TAB, type NewsItem, type NewsCategory } from '../data/news'
+import { asset } from '../utils/asset'
 
 type NewsTab = 'upcoming' | 'clinics' | 'results'
 
@@ -25,7 +26,7 @@ function NewsCard({ item }: { item: NewsItem }) {
       <div className="aspect-video relative overflow-hidden" aria-hidden="true">
         {item.image ? (
           <img
-            src={item.image}
+            src={asset(item.image)}
             alt=""
             loading="lazy"
             decoding="async"

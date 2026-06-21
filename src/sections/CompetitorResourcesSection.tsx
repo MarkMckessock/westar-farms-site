@@ -1,4 +1,5 @@
 import { ASSOCIATIONS, PRIZE_LISTS, MEMBERSHIP_REQUIREMENTS } from '../data/resources'
+import { asset } from '../utils/asset'
 import { SERIES_META } from '../data/shows'
 
 const SERIES_COLOR: Record<string, string> = {
@@ -38,7 +39,7 @@ function PrizeListCard({
         {image ? (
           <>
             <img
-              src={image}
+              src={asset(image)}
               alt=""
               loading="lazy"
               decoding="async"

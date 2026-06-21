@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { asset } from '../utils/asset'
 
 const SPONSORS = [
   {
@@ -200,7 +201,7 @@ export default function PartnersSection() {
         >
           <div className="aspect-[21/6] overflow-hidden">
             <img
-              src="/images/vendors.webp"
+              src={asset('/images/vendors.webp')}
               alt="Vendor row at a Westar Farms show"
               loading="lazy"
               decoding="async"

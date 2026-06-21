@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { asset } from '../utils/asset'
 
 export default function HeroSection() {
   return (
@@ -9,7 +10,7 @@ export default function HeroSection() {
         data-testid="section-home"
         className="relative min-h-screen flex flex-col"
         style={{
-          backgroundImage: 'url(/images/hero.webp)',
+          backgroundImage: `url(${asset('/images/hero.webp')})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 45%',
         }}

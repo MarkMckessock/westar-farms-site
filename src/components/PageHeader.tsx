@@ -1,3 +1,5 @@
+import { asset } from '../utils/asset'
+
 interface PageHeaderProps {
   label: string
   title: string
@@ -11,7 +13,7 @@ export default function PageHeader({ label, title, subtitle, image }: PageHeader
       className="relative flex items-end"
       style={{
         minHeight: '22rem',
-        backgroundImage: image ? `url(${image})` : undefined,
+        backgroundImage: image ? `url(${asset(image)})` : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center 40%',
         backgroundColor: 'var(--color-brand-dark)',

@@ -34,7 +34,7 @@ export default function HeroSection() {
         <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4 pt-24 pb-12">
           {/* Logo */}
           <img
-            src="/logo.png"
+            src={asset("/logo.png")}
             alt="Westar Farms"
             className="h-16 sm:h-20 lg:h-24 w-auto mx-auto mb-8 brightness-0 invert"
           />

@@ -1,7 +1,7 @@
 # Westar Farms Website — Product Specification
 
-**Version**: 1.0  
-**Last updated**: 2026-06-16 (Phase 4 complete)  
+**Version**: 1.1  
+**Last updated**: 2026-06-22 (Deployed to GitHub Pages; image optimization; multi-page routing)  
 **Status**: Source of truth — update this file when requirements change
 
 ---
@@ -19,20 +19,48 @@ Westar Farms (8132 Fernbank Rd., Ashton, Ontario) is an equestrian facility oper
 
 ---
 
-## 2. Architecture — Single Page Application
+## 2. Architecture — Multi-Page SPA (Hash Router)
 
-The site is a single-page application where each "page" in the nav is an anchor section on a long scrolling page, except where noted. React Router provides navigation; clicking a nav item smooth-scrolls to the section and updates the URL hash.
+Each top-level nav item is a separate route rendered by React Router (`createHashRouter`). Hash-based routing (`/#/shows`) is used for GitHub Pages compatibility (no server config needed). All routes share a `<Layout>` wrapper (Navbar + Outlet + Footer).
 
-### Route / Section Map
-| URL Hash      | Section Component   | Notes                          |
-|---------------|---------------------|--------------------------------|
-| `#home`       | `<HeroSection>`     | Default / landing              |
-| `#shows`      | `<ShowsSection>`    | With sub-tabs                  |
-| `#calendar`   | `<CalendarSection>` |                                |
-| `#news`       | `<NewsSection>`     |                                |
-| `#partners`   | `<PartnersSection>` |                                |
-| `#about`      | `<AboutSection>`    | With sub-sections              |
-| `#contact`    | `<ContactSection>`  |                                |
+### Route Map
+| Hash URL        | Page Component    | Key Sections Rendered                              |
+|-----------------|-------------------|----------------------------------------------------|
+| `/#/`           | `<HomePage>`      | `<HeroSection>`                                    |
+| `/#/shows`      | `<ShowsPage>`     | `<PageHeader>` + `<ShowsSection>` + `<CompetitorResourcesSection>` |
+| `/#/calendar`   | `<CalendarPage>`  | `<PageHeader>` + `<CalendarSection>`               |
+| `/#/news`       | `<NewsPage>`      | `<PageHeader>` + `<NewsSection>`                   |
+| `/#/partners`   | `<PartnersPage>`  | `<PageHeader>` + `<PartnersSection>`               |
+| `/#/about`      | `<AboutPage>`     | `<PageHeader>` + `<AboutSection>`                  |
+| `/#/contact`    | `<ContactPage>`   | `<PageHeader>` + `<ContactSection>`                |
+
+### PageHeader Component
+Every sub-page (all except Home) has a `<PageHeader>` with:
+- Full-width dark background photo with gradient overlay
+- Small all-caps label in brand-red
+- Decorative red rule
+- `<h1>` in Playfair Display
+- Optional subtitle
+
+### Tab / Section State via URL Search Params
+- **Shows tabs**: `?series=hunter-jumper|dressage|development` — read by `ShowsSection` via `useSearchParams`
+- **News tabs**: `?tab=upcoming|clinics|results` — read by `NewsSection` via `useSearchParams`
+- Scroll-based sub-navigation (Competitor Resources, Show Ring Schooling, About sub-sections) uses `sectionId` + `pendingScrollRef` pattern in Navbar
+
+### Layout
+`<Layout>` component (`src/components/Layout.tsx`):
+- Skip-to-content link targeting `#main-content`
+- `<ScrollToTop>` — scrolls to top on every pathname change
+- `<Navbar />` (sticky, fixed)
+- `<main id="main-content"><Outlet /></main>`
+- `<Footer />`
+
+### Asset Path Utility
+All image and logo paths in JSX/inline styles must use `asset()` from `src/utils/asset.ts`:
+```ts
+export const asset = (path: string) => import.meta.env.BASE_URL + path.replace(/^\//, '')
+```
+This is required because GitHub Pages serves the site at `/westar-farms-site/`, so `/images/foo.webp` would resolve to the wrong root without this helper. Apply to every `<img src>`, CSS `backgroundImage`, and logo reference.
 
 ---
 
@@ -48,31 +76,34 @@ Horizontal sticky nav. Transparent with white text over hero; transitions to sol
 
 ### Dropdown Menus
 
+Dropdown children use one of two navigation patterns:
+- **Search-param navigation** (series/tab tabs): `href: '/shows?series=dressage'` — no `sectionId`; `useNavigate` navigates to the URL and the section reads `useSearchParams`
+- **Scroll navigation** (always-rendered sections): `sectionId` triggers `pendingScrollRef` scroll-after-navigate in Navbar
+
 **Shows ▾**
-- Trillium-Bronze Hunter Jumper → `#shows-hunterjumper`
-- Dressage → `#shows-dressage`
-- Development → `#shows-development`
-- Feature Classes → `#shows-feature`
-- Competitor Resources → `#competitor-resources`
-- Show Ring Schooling → `#show-ring-schooling`
+- Trillium-Bronze Hunter Jumper → `/shows?series=hunter-jumper`
+- Dressage → `/shows?series=dressage`
+- Development → `/shows?series=development`
+- Feature Classes → `/shows?series=hunter-jumper`
+- Competitor Resources → `/shows` + scroll to `#competitor-resources`
+- Show Ring Schooling → `/about` + scroll to `#show-ring-schooling`
 
 **News ▾**
-- Upcoming Events (Promo) → `#news-upcoming`
-- Clinics → `#news-clinics`
-- Results → `#news-results`
+- Upcoming Events → `/news?tab=upcoming`
+- Clinics → `/news?tab=clinics`
+- Results → `/news?tab=results`
 
 **Partners ▾**
-- Sponsors → `#partners-sponsors`
-- How to Sponsor → `#partners-how-to-sponsor`
-- Vendors → `#partners-vendors`
-- Vendor Opportunities → `#partners-vendor-opportunities`
+- Sponsors → `/partners` + scroll to `#partners-sponsors`
+- How to Sponsor → `/partners` + scroll to `#partners-how-to-sponsor`
+- Vendors → `/partners` + scroll to `#partners-vendors`
+- Vendor Opportunities → `/partners` + scroll to `#partners-vendor-opportunities`
 
 **About Us ▾**
-- About Us → `#about`
-- Facilities → `#about-facilities`
-- Competitor Resources → `#competitor-resources`
-- Show Ring Schooling → `#show-ring-schooling`
-- Venue Rental → `#about-venue-rental`
+- Our Team → `/about` + scroll to `#about-team`
+- Facilities → `/about` + scroll to `#about-facilities`
+- Show Ring Schooling → `/about` + scroll to `#show-ring-schooling`
+- Venue Rental → `/about` + scroll to `#about-venue-rental`
 
 ### Mobile Navigation
 - Hamburger icon (≡) at right of nav
@@ -103,7 +134,7 @@ Horizontal sticky nav. Transparent with white text over hero; transitions to sol
 |------|-------|
 | Est. 1984 | Years of Experience |
 | 3 Show Series | Hunter Jumper · Dressage · Development |
-| Ottawa's Premier | Equestrian Venue |
+| Ottawa Area | Equestrian Venue |
 
 ---
 
@@ -447,12 +478,29 @@ Every major section follows this pattern:
 ```
 
 ### Team Member Cards (About section)
+
+Two-tier layout: founders are featured prominently, supporting team shown more compactly.
+
+**FounderCard** (Jeff & Bridget — only member with photos):
 ```
-[text-center p-6]
-  [w-24 h-24 rounded-full mx-auto bg-brand-light]  ← photo or initials
-  [h4: name, Playfair Display, mt-4]
-  [role: Inter Medium, brand-red, text-sm]
-  [bio: Inter, brand-gray, text-sm, mt-2]
+[rounded-2xl shadow-sm lg:flex]
+  [lg:w-5/12 flex h-64 lg:h-full]  ← side-by-side portrait photos
+    [w-1/2 h-full object-cover]    ← Jeff photo (objectPosition: '62% top')
+    [w-1/2 h-full object-cover object-top]  ← Bridget photo
+  [p-7 lg:p-10 flex flex-col justify-center]
+    [role: xs all-caps brand-red]
+    [h4: name, Playfair Display clamp(1.375rem, 2.5vw, 1.75rem)]
+    [bio: sm brand-gray]
+```
+
+**SupportCard** (all other team members — no photos):
+```
+[rounded-2xl shadow-sm flex items-center gap-5 p-5]
+  [w-14 h-14 rounded-full]  ← avatar circle placeholder
+  [div]
+    [h4: name, Playfair Display 1rem]
+    [role: xs all-caps brand-red]
+    [bio: sm brand-gray]
 ```
 
 ### Resource Action Buttons (Competitor Resources)
@@ -590,44 +638,82 @@ Items awaiting client input (render as visible yellow `TODO` banners in dev, omi
 - Sponsor logos beyond Vision Saddlery are placeholder tiles
 - Strict mode: prize list card selectors use `{ exact: true }` to avoid partial matches; membership table uses `.first()` for multi-cell text matches; Dressage nav link scoped to `mainNav`
 
-### Photo Integration ✅ COMPLETE
-17 photos copied from `design_resources/photos/` to `public/images/` with generic names:
+### Photo Integration ✅ COMPLETE (optimized to WebP)
+21 images in `public/images/` — all converted to WebP, resized to display dimensions. Original JPEGs are excluded from the repo (`.gitignore` covers `*.bak`). Re-run `node scripts/optimize-images.mjs` if new photos are added.
+
+**Optimization settings** (`scripts/optimize-images.mjs`):
+| Role | Max width | Quality |
+|------|-----------|---------|
+| Hero, page-header | 1920px | 82 |
+| Section images (facility, schooling, venue, vendors) | 1400px | 82 |
+| Card images (news, prize-list) | 900px | 82 |
+| Portrait photos (team) | 700px | 90 |
 
 | File | Source | Used in |
 |------|---------|---------|
-| `hero.jpg` | `riders_walking_down_laneway.jpg` | Hero background (58% dark overlay) |
-| `team-jeff-bridget.jpg` | `jeff_mckessock.jpg` | About: Jeff & Bridget team card — left photo |
-| `team-bridget.jpg` | `bridget_mckessock.jpg` | About: Jeff & Bridget team card — right photo |
-| `news-season-open.jpg` | `horse_show_photo_booth.jpg` | News: 2026 Season Open card |
-| `news-hunter-jumper.jpg` | `girl_smiling_and_riding.jpg` | News: Spring Trillium card |
-| `news-dressage.jpg` | `dressage_rider_3.jpg` | News: Springfest Dressage card |
-| `news-derby-day.jpg` | `presenting_award_with_sponsor_signs.jpg` | News: Derby Day card |
-| `news-clinic.jpg` | `jeff_mckessock_teaching.jpg` | News: Clinic Schedule card |
-| `news-results-champions.jpg` | `girls_lined_up_getting_ribbons.jpg` | News: 2025 Season Wrap card |
-| `news-results-dressage.jpg` | `ride_with_many_ribbons.jpg` | News: Summerset Dressage card |
-| `prize-list-hj.jpg` | `horse_jumping_over_jump_2.jpg` | Competitor Resources: HJ prize list thumbnail |
-| `prize-list-dressage.jpg` | `dressage_rider_4.jpg` | Competitor Resources: Dressage prize list thumbnail |
-| `prize-list-esd.jpg` | `dressage_rider.jpg` | Competitor Resources: ESD prize list thumbnail |
-| `prize-list-development.jpg` | `girl_smiling_with_ribbon.jpg` | Competitor Resources: Development prize list thumbnail |
-| `facility-ring.jpg` | `facilities_sand_ring_3.jpg` | About: Facilities section (replaces map placeholder) |
-| `schooling.jpg` | `stephanie_wark_teaching_4_riders_2.jpg` | About: Show Ring Schooling photo banner |
-| `venue-grass-ring.jpg` | `174_june30_2025.jpg` | About: Venue Rental photo banner |
-| `vendors.jpg` | `horse_show_vendors.jpg` | Partners: Vendors section photo banner |
-
-**Note**: Images are uncompressed originals (5–30 MB each). Optimize with WebP conversion and responsive `srcset` before production deployment.
+| `hero.webp` | `horse_jumping_over_jump_2.jpg` | Hero background |
+| `page-header-shows.webp` | `horse_jumping_3.jpg` | Shows PageHeader |
+| `page-header-calendar.webp` | `many_horses_lined_up_with_ribbons.jpg` | Calendar PageHeader |
+| `page-header-news.webp` | `presenting_award_with_sponsor_signs.jpg` | News PageHeader |
+| `team-jeff-bridget.webp` | `jeff_mckessock.jpg` | About: Jeff photo (left slot) |
+| `team-bridget.webp` | `bridget_mckessock.jpg` | About: Bridget photo (right slot) |
+| `news-season-open.webp` | `horse_show_photo_booth.jpg` | News card |
+| `news-hunter-jumper.webp` | `girl_smiling_and_riding.jpg` | News card |
+| `news-dressage.webp` | `dressage_rider_3.jpg` | News card |
+| `news-derby-day.webp` | `presenting_award_with_sponsor_signs.jpg` | News card |
+| `news-clinic.webp` | `jeff_mckessock_teaching.jpg` | News card |
+| `news-results-champions.webp` | `girls_lined_up_getting_ribbons.jpg` | News card |
+| `news-results-dressage.webp` | `ride_with_many_ribbons.jpg` | News card |
+| `prize-list-hj.webp` | `horse_jumping_over_jump_2.jpg` | Competitor Resources thumbnail |
+| `prize-list-dressage.webp` | `dressage_rider_4.jpg` | Competitor Resources thumbnail |
+| `prize-list-esd.webp` | `dressage_rider.jpg` | Competitor Resources thumbnail |
+| `prize-list-development.webp` | `girl_smiling_with_ribbon.jpg` | Competitor Resources thumbnail |
+| `facility-ring.webp` | `facilities_sand_ring_3.jpg` | About: Facilities photo |
+| `schooling.webp` | `stephanie_wark_teaching_4_riders_2.jpg` | About: Schooling photo |
+| `venue-grass-ring.webp` | `174_june30_2025.jpg` | About: Venue Rental photo |
+| `vendors.webp` | `horse_show_vendors.jpg` | Partners: Vendors photo |
 
 ### Phase 4 — Polish & QA ✅ COMPLETE (2026-06-16)
 - [x] Responsive QA across all breakpoints (Playwright: Mobile 375px, Tablet 768px, Desktop 1280px)
-- [x] Playwright tests for all sections (225 tests passing)
-- [x] Scroll spy — `useScrollSpy` hook with `requestAnimationFrame`; `aria-current="page"` on active nav item (desktop + mobile)
+- [x] Playwright tests for all sections (234 tests passing after multi-page refactor)
+- [x] Route-based `aria-current="page"` on active nav item via `useLocation` (replaced scroll spy)
 - [x] Skip-to-content link (`<a class="skip-to-content" href="#main-content">`) visible on keyboard focus; `<main id="main-content">`
 - [x] Global `focus-visible` styles in `src/index.css` (2px brand-red outline)
 - [x] Image lazy loading — `loading="lazy" decoding="async"` on all below-fold `<img>` tags
 - [x] Accessibility — ARIA labels on nav, landmark roles (`<main>`, `<header>`, `<footer>`, `<nav>`), decorative images `alt=""`
-- [x] GitHub Pages deployment — `.github/workflows/deploy.yml`, `public/.nojekyll`, `vite.config.ts` `base` via `VITE_BASE_URL` env var
+- [x] GitHub Pages deployment workflow — `.github/workflows/deploy.yml`, `public/.nojekyll`, `vite.config.ts` `base` via `VITE_BASE_URL` env var
 - [x] TypeScript strict mode — fixed `vite.config.ts` (import from `vitest/config`), unused parameter prefixed `_href`
-- [ ] Page performance audit (Lighthouse) — deferred; image optimization (WebP + srcset) recommended before production
-- [ ] Accessibility color-contrast audit — deferred; visual QA recommended with browser DevTools
+- [ ] Page performance audit (Lighthouse) — deferred
+- [ ] Accessibility color-contrast audit — deferred
+
+### Phase 4b — Multi-Page Routing Refactor ✅ COMPLETE (2026-06-16)
+Converted from single scrollable page to multi-page SPA. Significant architectural change.
+
+- [x] `createHashRouter` with 7 routes; `<Layout>` wrapper with `<Outlet>`
+- [x] `<PageHeader>` component — dark photo overlay, red label, decorative rule, h1, optional subtitle
+- [x] Page components: `HomePage`, `ShowsPage`, `CalendarPage`, `NewsPage`, `PartnersPage`, `AboutPage`, `ContactPage`
+- [x] Navbar fully rewritten: `useNavigate`/`useLocation` replace scroll spy; `handleChildClick` with `pendingScrollRef` pattern for scroll-after-navigate
+- [x] `ShowsSection` tab state: replaced `hashchange`/`HASH_TO_TAB` with `useSearchParams` (`?series=`)
+- [x] `NewsSection` tab state: replaced hash-based with `useSearchParams` (`?tab=`)
+- [x] About page: two-tier team layout (FounderCard featured + SupportCard compact)
+- [x] Contact page: removed duplicate heading (PageHeader provides h1; ContactSection omits redundant h2)
+- [x] Hero image: changed to action/competition photo (`horse_jumping_over_jump_2.jpg`)
+- [x] Stat strip copy: "Ottawa's Premier" → "Ottawa Area"
+- [x] All Playwright tests rewritten for route-based navigation (234 tests, all passing)
+
+### Phase 5 — Deployment & Image Optimization ✅ COMPLETE (2026-06-22)
+- [x] Git repository initialized: `github.com/MarkMckessock/westar-farms-site` (private)
+- [x] GitHub Actions deploy workflow (`.github/workflows/deploy.yml`): triggers on push to `main`; sets `VITE_BASE_URL=/westar-farms-site/`; deploys `dist/` via `actions/deploy-pages`
+- [x] Live at: `https://markmckessock.github.io/westar-farms-site/`
+- [x] Image optimization: all 21 images converted to WebP, resized to display dimensions — 255 MB → 3.5 MB total (98% reduction). Script at `scripts/optimize-images.mjs`
+- [x] `asset()` utility (`src/utils/asset.ts`): all image/logo paths in JSX and inline styles wrapped with `asset()` to prepend `import.meta.env.BASE_URL` — required for GitHub Pages sub-path deployment
+- [x] `.gitignore` updated: `design_resources/`, `.claude/`, `*.bak` excluded
+
+**Deployment notes:**
+- GitHub Pages source must be set to **GitHub Actions** (not branch) in repo Settings → Pages
+- `VITE_BASE_URL` is set in the workflow env; locally it defaults to `/` (no env var needed for dev)
+- Hash routing (`/#/shows`) means no 404s on direct URL access — no `404.html` redirect hack needed
+- WebP is supported by all modern browsers; no `<picture>` fallback required
 
 ---
 
